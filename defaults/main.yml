@@ -1,0 +1,7 @@
+---
+# defaults file for local_certificate_authority role
+#
+ca_dir: "files/example_CA"
+ca_name: "example CA"
+ca_subj: "/C=CH/O=Example Org/CN={{ca_name}}"
+ca_days: 3650 # 10 years
