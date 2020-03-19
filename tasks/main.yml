@@ -4,42 +4,42 @@
 - block:
   # whole block delegated to localhost
   - name: create CA subdirs
-    file: path={{item}} state=directory
+    file: path={{ item }} state=directory
     with_items:
-      - "{{ca_dir}}"
-      - "{{ca_dir}}/private"
-      - "{{ca_dir}}/certs"
-      - "{{ca_dir}}/crl"
-      - "{{ca_dir}}/newcerts"
+      - "{{ ca_dir }}"
+      - "{{ ca_dir }}/private"
+      - "{{ ca_dir }}/certs"
+      - "{{ ca_dir }}/crl"
+      - "{{ ca_dir }}/newcerts"
   
   - name: create ca/openssl.cnf
     template:
       src: openssl.cnf.j2
-      dest: "{{ca_dir}}/openssl.cnf"
+      dest: "{{ ca_dir }}/openssl.cnf"
   
   - name: create ca/index.txt
     copy:
       content: ""
-      dest: "{{ca_dir}}/index.txt"
+      dest: "{{ ca_dir }}/index.txt"
       force: false # do not change content if file exists
   
   - name: create ca/serial
     copy:
       content: 1000
-      dest: "{{ca_dir}}/serial"
+      dest: "{{ ca_dir }}/serial"
       force: false # do not change content if file exists
   
   - name: create CA private key
-    shell: "openssl genrsa 4096 | ansible-vault encrypt --output {{ca_dir}}/private/ca.key.pem"
+    shell: "openssl genrsa 4096 | ansible-vault encrypt --output {{ ca_dir }}/private/ca.key.pem"
     args:
-      creates: "{{ca_dir}}/private/ca.key.pem"
+      creates: "{{ ca_dir }}/private/ca.key.pem"
   
   - name: create CA root cert
     # nodes -> don't encrypt cert
     shell: >
-      ansible-vault view {{ca_dir}}/private/ca.key.pem |
-      openssl req -nodes -new -x509 -extensions v3_ca -days {{ca_days}} -subj '{{ca_subj}}' -out {{ca_dir}}/certs/ca.cert.pem
+      ansible-vault view {{ ca_dir }}/private/ca.key.pem |
+      openssl req -nodes -new -x509 -extensions v3_ca -days {{ ca_days }} -subj '{{ ca_subj }}' -out {{ ca_dir }}/certs/ca.cert.pem
     args:
-      creates: "{{ca_dir}}/certs/ca.cert.pem"
+      creates: "{{ ca_dir }}/certs/ca.cert.pem"
 
   delegate_to: localhost
