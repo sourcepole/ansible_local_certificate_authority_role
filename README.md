@@ -49,7 +49,7 @@ Example Playbook
            ca_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN=Example Org CA"
            # Root CA certificate should be valid for 10 years
            ca_days: 3650
-           
+
 License
 -------
 
