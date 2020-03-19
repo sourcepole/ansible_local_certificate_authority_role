@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: local_certificate_authority
   author: Tomáš Pospíšel
   description: create a local in ansible certificate authority
   company: Sourcepole.ch
