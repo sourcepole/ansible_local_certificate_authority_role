@@ -43,7 +43,7 @@ Example Playbook
 
     - hosts: localhost
       roles:
-         - role: tpo.local_certificate_authority
+         - role: tpo.local_certificate_authority/ca
            ca_dir: files/example_org_CA
            ca_name: "Example Org CA"
            ca_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN=Example Org CA"
