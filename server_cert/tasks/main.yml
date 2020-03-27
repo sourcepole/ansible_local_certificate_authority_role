@@ -1,0 +1,39 @@
+- name: Create server private key
+  shell: >
+    openssl genrsa 2048 | 
+    ansible-vault encrypt --output '{{ ca_dir }}/private/{{ server_name }}.key.pem'
+  args:
+    creates: "{{ ca_dir }}/private/{{ server_name }}.key.pem"
+
+- name: Create server CSR
+  shell: >
+    ansible-vault decrypt '{{ ca_dir }}/private/{{ server_name }}.key.pem' --output - 2>/dev/null |
+    openssl req -new -subj '{{ server_subj }}' -nodes
+    -key /dev/stdin
+    -out '{{ ca_dir }}/private/{{ server_name }}.csr.pem'
+  args:
+    creates: "{{ ca_dir }}/private/{{ server_name }}.csr.pem"
+
+- name: Create server cert
+  shell: >
+    ( ansible-vault decrypt --output - '{{ ca_dir }}/private/ca.key.pem' 2>/dev/null;
+    cat '{{ ca_dir }}/private/{{ server_name }}.csr.pem') |
+    openssl ca -config '{{ ca_dir }}/openssl.cnf'
+    -extensions server_cert -days {{ server_days }} -notext -md sha256 -batch
+    -keyfile /dev/stdin
+    -in /dev/stdin
+    -out '{{ ca_dir }}/certs/{{ server_name }}.cert.pem'
+  args:
+    creates: "{{ ca_dir }}/certs/{{ server_name }}.cert.pem"
+
+- name: Root cert chain for clients
+  shell: >
+    cat '{{ ca_dir }}/certs/{{ server_name }}.cert.pem' '{{ ca_dir }}/certs/ca.cert.pem' > '{{ ca_dir }}/certs/{{ server_name }}-chain.cert.pem'
+  args:
+    creates: "{{ ca_dir }}/certs/{{ server_name }}-chain.cert.pem"
+
+- name: show hint
+  debug: msg="Show cert with `openssl x509 -noout -text -in {{ ca_dir }}/certs/{{ server_name }}.cert.pem`"
+
+- name: verify hint
+  debug: msg="Verify cert with `openssl verify -CAfile {{ ca_dir }}/certs/ca.cert.pem {{ ca_dir }}/certs/{{ server_name }}.cert.pem`"

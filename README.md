@@ -50,6 +50,15 @@ Example Playbook
            # Root CA certificate should be valid for 10 years
            ca_days: 3650
 
+    - hosts: localhost
+      roles:
+         - role: tpo.local_certificate_authority/server_cert
+           ca_dir: files/example_org_CA
+           server_name: server.example.org
+           server_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN=server.example.org"
+           # Server certificate should be valid for 10 years
+           server_days: 3650
+
 License
 -------
 
