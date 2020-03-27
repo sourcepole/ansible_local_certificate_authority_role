@@ -9,7 +9,7 @@ that:
 
 * private keys are encrypted and in ansible vaults
 
-* keys end certificates can be commited to git into the
+* keys and certificates can be commited to git into the
   same repository where ansible playbooks live
 
 * key management can be done entirely locally
@@ -17,7 +17,7 @@ that:
 * keys and certificates can be simply copied to the
   hosts where they are required
 
-Once created, both keys and certificate will **not**
+Once created, both keys and certificates will **not**
 be changed even if templates or parameters change.
 
 Thus to create new keys/certificates, you must first remove the
