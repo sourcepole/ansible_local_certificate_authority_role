@@ -1,3 +1,4 @@
+---
 # tasks file for local_certificate_authority
 
 - block:
@@ -36,8 +37,10 @@
   - name: create CA root cert
     # nodes -> don't encrypt cert
     shell: >
-      ansible-vault view {{ ca_dir }}/private/ca.key.pem |
-      openssl req -nodes -new -x509 -extensions v3_ca -days {{ ca_days }} -subj '{{ ca_subj }}' -out {{ ca_dir }}/certs/ca.cert.pem
+      ansible-vault decrypt {{ ca_dir }}/private/ca.key.pem --output - 2>/dev/null |
+      openssl req -nodes -new -x509 -extensions v3_ca -days {{ ca_days }} -subj '{{ ca_subj }}'
+      -key /dev/stdin
+      -out {{ ca_dir }}/certs/ca.cert.pem
     args:
       creates: "{{ ca_dir }}/certs/ca.cert.pem"
 
