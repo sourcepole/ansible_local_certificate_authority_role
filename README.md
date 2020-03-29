@@ -42,22 +42,31 @@ Example Playbook
 ----------------
 
     - hosts: localhost
+      vars:
+        ca_dir: files/example_org_CA
+        server_name: server.example.org
       roles:
          - role: tpo.local_certificate_authority/ca
-           ca_dir: files/example_org_CA
+           # is using playbook variables:
+           # ca_dir: ...
            ca_name: "Example Org CA"
            ca_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN=Example Org CA"
            # Root CA certificate should be valid for 10 years
            ca_days: 3650
 
-    - hosts: localhost
       roles:
          - role: tpo.local_certificate_authority/server_cert
-           ca_dir: files/example_org_CA
-           server_name: server.example.org
-           server_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN=server.example.org"
+           # is using playbook variables:
+           # ca_dir: ...
+           # server_name: ...
+           server_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN={{ server_name }}"
            # Server certificate should be valid for 10 years
            server_days: 3650
+
+      tasks:
+        - name: verify generated certificates
+          shell: openssl verify -CAfile {{ ca_dir }}/certs/ca.cert.pem {{ ca_dir }}/certs/{{ server_name }}.cert.pem
+          changed_when: false # doesn't change anything
 
 License
 -------
