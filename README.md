@@ -1,8 +1,8 @@
 local_certificate_authority
 ===========================
 
-This role implements a local, in ansible authority, such
-that:
+This role implements a local, in ansible certificate authority,
+such that:
 
 * private keys and certificates reside on the local host
   from which the playbook gets executed
