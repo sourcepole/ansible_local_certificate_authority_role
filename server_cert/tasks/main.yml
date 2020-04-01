@@ -9,7 +9,7 @@
   shell: >
     ansible-vault decrypt '{{ ca_dir }}/private/{{ server_name }}.key.pem' --output - 2>/dev/null |
     openssl req -new -subj '{{ server_subj }}' -nodes
-    -addext "subjectAltName=DNS:{{ server_name }}"
+    -addext "subjectAltName=DNS:{{ server_subjectAlternativeName }}"
     -key /dev/stdin
     -out '{{ ca_dir }}/private/{{ server_name }}.csr.pem'
   args:
@@ -19,7 +19,7 @@
   shell: >
     ( ansible-vault decrypt --output - '{{ ca_dir }}/private/ca.key.pem' 2>/dev/null;
     cat '{{ ca_dir }}/private/{{ server_name }}.csr.pem') |
-    SAN='DNS:{{ server_name }}' openssl ca -config '{{ ca_dir }}/openssl.cnf'
+    SAN='{{ server_subjectAlternativeName }}' openssl ca -config '{{ ca_dir }}/openssl.cnf'
     -extensions server_cert -days {{ server_days }} -notext -md sha256 -batch
     -keyfile /dev/stdin
     -in /dev/stdin

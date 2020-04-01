@@ -60,6 +60,9 @@ Example Playbook
            # ca_dir: ...
            # server_name: ...
            server_subj: "/C=CH/ST=GR/L=Maladers/O=Example Org/CN={{ server_name }}"
+           # server_subjectAlternativeName:
+           # * optional
+           # * set to DNS:server_name by default
            # Server certificate should be valid for 10 years
            server_days: 3650
 
